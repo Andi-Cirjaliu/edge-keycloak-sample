@@ -18,4 +18,44 @@ console.log('Keycloak options: ', kcConfig);
 const keycloak = new Keycloak({ store }, kcConfig);
 // console.log('keycloak: ', keycloak); 
 
+keycloak.accessDenied = (req, res) => {
+  console.log('Access denied---------------');
+  // console.log('Req: ', req);
+  // console.log('Res: ', res);
+
+  if ( req.kauth ) {
+    console.log('grant: ', req.kauth.grant);
+  } else {
+    console.log('No grant...');
+  }
+
+  console.log('-----------------------------');
+  console.log("Session: ", req.session);
+
+  res.send("You don't have access to this page");
+}
+
+keycloak.authenticated = (req) => {
+  console.log('User authenticated---------------');
+
+  if ( req.kauth ) {
+    console.log('grant: ', req.kauth.grant);
+  } else {
+    console.log('No grant...');
+  }
+
+  console.log('-----------------------------');
+  console.log("Session: ", req.session);
+}
+
+// keycloak.checkToken = (token, request) => {
+//   console.log('Check token-----------------------------');
+//   console.log('token is:', token);
+//   console.log('-----------------------------');
+//   console.log('req is: ', request);
+//   console.log('-----------------------------');
+
+//   return true;
+// }
+
 module.exports = keycloak;

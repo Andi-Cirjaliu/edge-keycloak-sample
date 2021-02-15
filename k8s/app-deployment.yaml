@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: security-keycloak-app-deployment
+spec:
+  selector:
+    matchLabels:
+      component: security-keycloak-app
+  template:
+    metadata:
+      labels:
+        component: security-keycloak-app
+    spec:
+      containers:
+      - name: security-keycloak-app
+        image: security-keycloak-app:1.0
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+        env:
+          - name: NODE_ENV
+            value: production
+          - name: PORT
+            value: '3000'
+          - name: AUTH_SERVER_URL
+            # This is when keycloak is deployed on a production cluster in the 'operators' namespace
+            # value: https://elasticsearch-es-http.operators.svc.cluster.local:9200
+            # This is when keycloak is deployed using the config files in the same namespace
+            # using the localhost for keycloak does NOT work - Access denied
+            # value: http://localhost:30080/auth/
+            #using the external IP for keycloak is working fine
+            value: http://172.19.48.1:30080/auth/
+          - name: AUTH_REALM
+            value: myrealm
+          - name: AUTH_CLIENT
+            value: vanilla
