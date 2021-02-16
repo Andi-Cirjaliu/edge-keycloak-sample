@@ -1,0 +1,20 @@
+<div>
+    <!-- <h2>Posts</h2> -->
+
+    <div class="items">
+        <% if (data) { 
+            data.forEach( post => { %>
+
+        <div>
+            <div class="card-body" style="padding-top: 0.5rem;padding-bottom: 0;">
+              <h5 class="card-title"><%= post.title %></h5>
+              <p class="card-text"><%= post.body %></p>
+              <hr />
+            </div>
+          </div>
+        <%
+        });
+    } %>
+    </div>
+  </div>
+

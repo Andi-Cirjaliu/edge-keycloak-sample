@@ -18,6 +18,28 @@ console.log('Keycloak options: ', kcConfig);
 const keycloak = new Keycloak({ store }, kcConfig);
 // console.log('keycloak: ', keycloak); 
 
+keycloak.authenticated = (req) => {
+  console.log('User authenticated---------------');
+
+  let user = extractUserInfo(req);
+
+  req.session.isAuthenticated = true;
+  req.session.user = user;
+
+  console.log("Session: ", req.session);
+  console.log('-----------------------------');  
+}
+
+keycloak.deauthenticated = (req) => {
+  console.log('User deauthenticated---------------');
+
+  req.session.isAuthenticated = false;
+  req.session.user = null;
+
+  console.log("Session: ", req.session);
+  console.log('-----------------------------');
+}
+
 keycloak.accessDenied = (req, res) => {
   console.log('Access denied---------------');
   // console.log('Req: ', req);
@@ -29,33 +51,50 @@ keycloak.accessDenied = (req, res) => {
     console.log('No grant...');
   }
 
-  console.log('-----------------------------');
+  req.session.isAuthenticated = false;
+  req.session.user = null;
+
   console.log("Session: ", req.session);
+  console.log('-----------------------------');
 
   res.send("You don't have access to this page");
 }
 
-keycloak.authenticated = (req) => {
-  console.log('User authenticated---------------');
+const extractUserInfo = (req) => {
+  if ( ! req.kauth ) {
+    console.log('No grant found...');
+    return null;
+  } 
 
-  if ( req.kauth ) {
-    console.log('grant: ', req.kauth.grant);
-  } else {
-    console.log('No grant...');
+  let user;
+
+  const grant = req.kauth.grant;
+  // console.log('grant: ', grant);
+  if (grant) {
+    const token = grant.access_token;
+    // console.log('----entire token: ', token);
+    console.log("----token: ", token.token);
+    console.log("------content: ", token.content);
+    console.log(
+      "------user id: ",
+      token.content.sub,
+      ", name: ",
+      token.content.name,
+      ", email: ",
+      token.content.email
+    );
+    // var permissions = token.authorization
+    //   ? token.authorization.permissions
+    //   : undefined;
+    // console.log("------permissions: ", permissions);
+
+    const id = token.content.sub;
+    const name = token.content.name;
+    const email = token.content.email;
+    user = { id, name, email };
   }
 
-  console.log('-----------------------------');
-  console.log("Session: ", req.session);
+  return user;
 }
-
-// keycloak.checkToken = (token, request) => {
-//   console.log('Check token-----------------------------');
-//   console.log('token is:', token);
-//   console.log('-----------------------------');
-//   console.log('req is: ', request);
-//   console.log('-----------------------------');
-
-//   return true;
-// }
 
 module.exports = keycloak;

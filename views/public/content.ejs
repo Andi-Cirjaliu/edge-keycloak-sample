@@ -1,1 +1,9 @@
-This is a public page. The other pages are private. Click on any of the link from the top of the page.
+<% if ( ! isAuthenticated ) { %>
+    <div>
+        This is a public page. Click on the Login link to authenticate and see the list of posts.
+    </div>
+<% } else { %>
+    <div>
+        This is a public page.
+    </div>
+<% } %>
