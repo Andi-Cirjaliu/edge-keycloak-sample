@@ -1,0 +1,18 @@
+apiVersion: skaffold/v2beta7
+kind: Config
+metadata:
+  name: keycloak-example
+build:
+  artifacts:
+  - image: example-keycloak-app
+    context: ./
+    sync:
+      manual:
+      - src: './*'
+        dest: /app/*
+deploy:
+  kubectl:
+    manifests:
+      - ./k8s/*
+      # k8s_keycloak contains the configuration files for deploying keycloak. comment next line if keycloak is already deployed
+      # - ./k8s_keycloak/*

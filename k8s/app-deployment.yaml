@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: security-keycloak-app
-        image: security-keycloak-app:1.0
+        image: example-keycloak-app:1.0
         resources:
           limits:
             memory: "128Mi"

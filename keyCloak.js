@@ -4,32 +4,11 @@ const Keycloak = require('keycloak-connect');
 const store = new session.MemoryStore();
 
 const environment = process.env.NODE_ENV || 'production';
-// let authSecure = process.env.AUTH_SERVER_SECURE || 'true';
-// if ( environment === 'production' ) {
-//   authSecure = 'true';
-// }
-// let authHost = process.env.AUTH_SERVER_HOST || '';
-// const authPort = process.env.AUTH_SERVER_PORT || 8080;
-// const authURI = process.env.AUTH_SERVER_URI || '/auth/';
-// let authURL = '';
-
-// if ( authSecure === 'true '){
-//   authURL += 'https://';
-// } else {
-//   authURL += 'http://';
-// }
-// authURL += authHost + ':' + authPort + authURI;
-
-let authURL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
-
+const authURL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
 const authRealm = process.env.AUTH_REALM;
 const authClient = process.env.AUTH_CLIENT || "myclient";
 
 console.log('Environment: ', environment);
-// console.log('authSecure: ', authSecure);
-// console.log('authHost: ', authHost);
-// console.log('authPort: ', authPort);
-// console.log('authURI: ', authURI);
 console.log('authURL: ', authURL);
 console.log('authRealm: ', authRealm);
 console.log('authClient: ', authClient);
