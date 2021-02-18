@@ -1,6 +1,5 @@
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
-const ip = require('ip');
 
 const store = new session.MemoryStore();
 
@@ -10,9 +9,6 @@ const environment = process.env.NODE_ENV || 'production';
 //   authSecure = 'true';
 // }
 // let authHost = process.env.AUTH_SERVER_HOST || '';
-// if ( authHost === '' ) {
-//   authHost = ip.address();
-// }
 // const authPort = process.env.AUTH_SERVER_PORT || 8080;
 // const authURI = process.env.AUTH_SERVER_URI || '/auth/';
 // let authURL = '';
@@ -41,12 +37,12 @@ console.log('authClient: ', authClient);
 const kcConfig = {
     "realm": authRealm,
     "auth-server-url": authURL,
-    "ssl-required": "external",
+    "ssl-required": "external", //"none"
     "resource": authClient,
     "public-client": true,
     "confidential-port": 0
   }
-console.log('Keycloak options: ', kcConfig);
+console.log('Keycloak options\n: ', kcConfig);
 const keycloak = new Keycloak({ store }, kcConfig);
 // console.log('keycloak: ', keycloak); 
 

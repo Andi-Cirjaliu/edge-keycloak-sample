@@ -28,7 +28,7 @@ services:
       #using the localhost for keycloak does NOT work - Access denied
       # - AUTH_SERVER_URL=http://localhost:8080/auth/
       #using the external IP for keycloak is working fine
-      - AUTH_SERVER_URL=http://172.17.208.1:8080/auth/
+      - AUTH_SERVER_URL=http://172.20.80.1:8080/auth/
       - AUTH_REALM=myrealm
       - AUTH_CLIENT=vanilla
     ports: 
