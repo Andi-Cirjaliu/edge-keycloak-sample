@@ -25,6 +25,14 @@ spec:
             value: production
           - name: PORT
             value: '3000'
+          # - name: AUTH_SERVER_SECURE
+          #   value: 'false'
+          # - name: AUTH_SERVER_HOST
+          #   value: ''
+          # - name: AUTH_SERVER_PORT
+          #   value: '30080'
+          # - name: AUTH_SERVER_URI
+          #   value: '/auth/'
           - name: AUTH_SERVER_URL
             # This is when keycloak is deployed on a production cluster in the 'operators' namespace
             # value: https://elasticsearch-es-http.operators.svc.cluster.local:9200
@@ -32,7 +40,7 @@ spec:
             # using the localhost for keycloak does NOT work - Access denied
             # value: http://localhost:30080/auth/
             #using the external IP for keycloak is working fine
-            value: http://172.19.48.1:30080/auth/
+            value: http://172.17.208.1:30080/auth/
           - name: AUTH_REALM
             value: myrealm
           - name: AUTH_CLIENT

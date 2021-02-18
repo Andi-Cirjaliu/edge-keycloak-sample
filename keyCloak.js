@@ -1,16 +1,48 @@
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
+const ip = require('ip');
 
 const store = new session.MemoryStore();
 
-console.log('process.env.AUTH_REALM: ', process.env.AUTH_REALM);
-console.log('process.env.AUTH_SERVER_URL: ', process.env.AUTH_SERVER_URL);
-console.log('process.env.AUTH_CLIENT: ', process.env.AUTH_CLIENT);
+const environment = process.env.NODE_ENV || 'production';
+// let authSecure = process.env.AUTH_SERVER_SECURE || 'true';
+// if ( environment === 'production' ) {
+//   authSecure = 'true';
+// }
+// let authHost = process.env.AUTH_SERVER_HOST || '';
+// if ( authHost === '' ) {
+//   authHost = ip.address();
+// }
+// const authPort = process.env.AUTH_SERVER_PORT || 8080;
+// const authURI = process.env.AUTH_SERVER_URI || '/auth/';
+// let authURL = '';
+
+// if ( authSecure === 'true '){
+//   authURL += 'https://';
+// } else {
+//   authURL += 'http://';
+// }
+// authURL += authHost + ':' + authPort + authURI;
+
+let authURL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
+
+const authRealm = process.env.AUTH_REALM;
+const authClient = process.env.AUTH_CLIENT || "myclient";
+
+console.log('Environment: ', environment);
+// console.log('authSecure: ', authSecure);
+// console.log('authHost: ', authHost);
+// console.log('authPort: ', authPort);
+// console.log('authURI: ', authURI);
+console.log('authURL: ', authURL);
+console.log('authRealm: ', authRealm);
+console.log('authClient: ', authClient);
+
 const kcConfig = {
-    "realm": process.env.AUTH_REALM || "myrealm",
-    "auth-server-url": process.env.AUTH_SERVER_URL || "http://localhost:8080/auth/",
+    "realm": authRealm,
+    "auth-server-url": authURL,
     "ssl-required": "external",
-    "resource": process.env.AUTH_CLIENT || "myclient",
+    "resource": authClient,
     "public-client": true,
     "confidential-port": 0
   }
