@@ -29,7 +29,7 @@ const sessionOption = {
 
 if ( process.env.NODE_ENV === "production" ) {
   app.set('trust proxy', 1) // trust first proxy
-  sessionOption.cookie.secure = true // serve secure cookies
+  // sessionOption.cookie.secure = true // serve secure cookies
 }
 console.log('Session options: ', sessionOption);
 
