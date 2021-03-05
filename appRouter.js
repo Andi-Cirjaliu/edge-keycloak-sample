@@ -13,4 +13,6 @@ router.get("/login", keycloak.protect(), appController.getLoginPage);
 router.get("/logoff", appController.getLogoffPage);
 router.post("/logoff", appController.getLogoffPage);
 
+router.get("/denied", appController.getAccessDeniedPage);
+
 module.exports = router;

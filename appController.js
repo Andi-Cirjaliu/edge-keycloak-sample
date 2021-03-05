@@ -5,7 +5,7 @@ const TITLE = "Keycloak demo";
 const getHomePage = (req, res, next) => {
   console.log("request to /  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session);
-  console.log("Session store: ", require('./memoryStore'));
+  // console.log("Session store: ", require('./memoryStore'));
 
   return res.render("public/main", {
     pageTitle: TITLE,
@@ -62,6 +62,20 @@ const getPosts = async (req, res, next) => {
   }
 };
 
+const getAccessDeniedPage = (req, res, next) => {
+  console.log("request to /denied  - NOT PROTECTED PAGE");
+  console.log("Session: ", req.session);
+  // console.log("Session store: ", require('./memoryStore'));
+
+  return res.render("public/404", {
+    pageTitle: TITLE,
+    isAuthenticated: req.session.isAuthenticated,
+    path: "/",
+    user: req.session.user,
+    errorMsg: "You don't have access to this page",
+  });
+};
+
 const checkSSO = (req, res, next) => {
   console.log("request to /check-sso  - PROTECTED PAGE");
   console.log("Session: ", req.session);
@@ -103,5 +117,6 @@ module.exports = {
   getLoginPage,
   getPosts,
   getLogoffPage,
+  getAccessDeniedPage,
   checkSSO,
 };
