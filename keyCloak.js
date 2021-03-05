@@ -20,7 +20,7 @@ const kcConfig = {
     "realm": authRealm,
     "auth-server-url": authURL,
     "ssl-required": "external", //"none" //"external"
-    "resource": authClient,
+    "resource": "vanilla",
     "public-client": true,
     "confidential-port": 0
   }
