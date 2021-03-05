@@ -19,14 +19,21 @@ app.set('views', 'views');
 
 const store = new session.MemoryStore();
 
-app.use(
-  session({
-    secret: "hello",
-    resave: true,
-    saveUninitialized: true,
-    store: store
-  })
-);
+const sessionOption = {
+  secret: "hello keycloak",
+  resave: true,
+  saveUninitialized: true,
+  store: store,
+  cookie: {}
+};
+
+if ( process.env.NODE_ENV === "production" ) {
+  app.set('trust proxy', 1) // trust first proxy
+  sessionOption.cookie.secure = true // serve secure cookies
+}
+console.log('Session options: ', sessionOption);
+
+app.use(session(sessionOption));
 
 // app.use(express.json());
 
