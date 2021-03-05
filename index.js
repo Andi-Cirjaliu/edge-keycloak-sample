@@ -17,7 +17,7 @@ app.set('views', 'views');
 
 // app.set( 'trust proxy', true );
 
-const store = new session.MemoryStore();
+const store = require('./memoryStore');
 
 const sessionOption = {
   secret: 'mySecret',

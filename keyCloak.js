@@ -1,7 +1,7 @@
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
-
-const store = new session.MemoryStore();
+const store = require('./memoryStore');
+// const store = new session.MemoryStore();
 
 const environment = process.env.NODE_ENV || 'production';
 const authURL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
