@@ -20,8 +20,8 @@ app.set('views', 'views');
 const store = new session.MemoryStore();
 
 const sessionOption = {
-  secret: "hello keycloak",
-  resave: true,
+  secret: 'mySecret',
+  resave: false,
   saveUninitialized: true,
   store: store,
   cookie: {}
