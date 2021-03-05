@@ -15,12 +15,16 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 
+// app.set( 'trust proxy', true );
+
+const store = new session.MemoryStore();
 
 app.use(
   session({
     secret: "hello",
     resave: true,
-    saveUninitialized: false,
+    saveUninitialized: true,
+    store: store
   })
 );
 
