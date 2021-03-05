@@ -14,6 +14,7 @@ console.log('authURL: ', authURL);
 console.log('authRealm: ', authRealm);
 console.log('authClient: ', authClient);
 console.log('authPublicKey: ', authPublicKey);
+console.log('NODE_TLS_REJECT_UNAUTHORIZED:', process.env.NODE_TLS_REJECT_UNAUTHORIZED)
 
 const kcConfig = {
     "realm": authRealm,
