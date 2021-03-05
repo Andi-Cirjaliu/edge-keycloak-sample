@@ -5,6 +5,7 @@ const TITLE = "Keycloak demo";
 const getHomePage = (req, res, next) => {
   console.log("request to /  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session);
+  console.log("Session store: ", require('./memoryStore'));
 
   return res.render("public/main", {
     pageTitle: TITLE,

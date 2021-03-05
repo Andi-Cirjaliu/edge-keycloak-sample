@@ -40,16 +40,27 @@ keycloak.authenticated = (req) => {
   req.session.user = user;
 
   console.log("Session: ", req.session);
+  console.log("Session store: ", require('./memoryStore'));
   console.log('-----------------------------');  
 }
 
 keycloak.deauthenticated = (req) => {
   console.log('User deauthenticated---------------');
 
-  req.session.isAuthenticated = false;
-  req.session.user = null;
+  if ( req.session ) {
+    req.session.isAuthenticated = false;
+    req.session.user = null;
+  }
+
+  // req.session.destroy(function(err) {
+  //   // cannot access session here
+  //   if ( err ) {
+  //     console.log('Error occured when invalidatin session: ', err);
+  //   }
+  // });
 
   console.log("Session: ", req.session);
+  console.log("Session store: ", require('./memoryStore'));
   console.log('-----------------------------');
 }
 
