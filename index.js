@@ -41,7 +41,7 @@ app.use(session( sessionOption));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(keycloak.middleware());
+app.use(keycloak.middleware({logout:"/logoff", admin:"/"}));
 
 app.use(require('./appRouter'));
 

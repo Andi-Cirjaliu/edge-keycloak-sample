@@ -84,8 +84,8 @@ keycloak.accessDenied = async (req, res) => {
     console.log('No grant...');
   }
 
-  req.session.isAuthenticated = false;
-  req.session.user = null;
+  // req.session.isAuthenticated = false;
+  // req.session.user = null;
 
   console.log("Session: ", req.session.id, ' - ',req.session);
   storeCtrl.printStore(store);
