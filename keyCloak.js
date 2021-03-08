@@ -138,7 +138,8 @@ const extractUserInfo = (req) => {
   let user;
 
   const grant = req.kauth.grant;
-  // console.log('grant: ', grant);
+  console.log('grant: ', grant);
+
   if (grant) {
     const token = grant.access_token;
     // console.log('----entire token: ', token);
