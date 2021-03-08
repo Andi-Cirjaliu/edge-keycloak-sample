@@ -34,6 +34,7 @@ const keycloak = new Keycloak({ store }, kcConfig);
 keycloak.authenticated = (req) => {
   console.log('User authenticated---------------');
 
+  console.log('Keycloak: ', keycloak);
   let user = extractUserInfo(req);
 
   req.session.isAuthenticated = true;
@@ -47,6 +48,8 @@ keycloak.authenticated = (req) => {
 keycloak.deauthenticated = (req) => {
   console.log('User deauthenticated---------------');
 
+  console.log('Keycloak: ', keycloak);
+  
   if ( req.session ) {
     req.session.isAuthenticated = false;
     req.session.user = null;
@@ -99,15 +102,17 @@ keycloak.accessDenied = async (req, res) => {
   console.log('-----------------------------');
 
   try {
+    console.log("-------- Get grant ... ");
     let grant = await keycloak.getGrant(req, res);
-    console.log("grant ", grant);
+    console.log("-------- grant ", grant);
   } catch (err) {
     console.log("Failed to obtain a grant. error: ", err);
   }
 
   try {
+    console.log("-------- Get grant from code ", req.query.code);
     let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
-    console.log("grant ", grant);
+    console.log("-------- grant from code: ", grant);
   } catch (err) {
     console.log("Failed to obtain a grant from code. error: ", err);
   }
