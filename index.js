@@ -17,13 +17,13 @@ app.set('views', 'views');
 
 // app.set( 'trust proxy', true );
 
-const store = require('./memoryStore');
+const storeCtrl = require('./memoryStoreController');
 
 const sessionOption = {
   secret: 'mySecret',
   resave: false,
   saveUninitialized: true,
-  store: store,
+  store: storeCtrl.store1,
   cookie: {},
   unset: 'destroy',
 };

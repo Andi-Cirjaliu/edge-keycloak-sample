@@ -1,11 +1,13 @@
 const { default: axios } = require("axios");
+const storeCtrl = require('./memoryStoreController');
 
 const TITLE = "Keycloak demo";
 
 const getHomePage = (req, res, next) => {
   console.log("request to /  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session.id, ' - ',req.session);
-  // console.log("Session store: ", require('./memoryStore'));
+  console.log("Session store1: ", storeCtrl.printStore(storeCtrl.store1));
+  console.log("Session store2: ", storeCtrl.printStore(storeCtrl.store2));
 
   return res.render("public/main", {
     pageTitle: TITLE,
@@ -65,7 +67,8 @@ const getPosts = async (req, res, next) => {
 const getAccessDeniedPage = (req, res, next) => {
   console.log("request to /denied  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session.id, ' - ',req.session);
-  console.log("Session store: ", require('./memoryStore'));
+  console.log("Session store1: ", storeCtrl.printStore(storeCtrl.store1));
+  console.log("Session store2: ", storeCtrl.printStore(storeCtrl.store2));
 
   return res.render("public/404", {
     pageTitle: TITLE,
