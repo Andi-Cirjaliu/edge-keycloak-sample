@@ -35,7 +35,7 @@ keycloak.authenticated = (req) => {
   console.log('User authenticated---------------');
 
   console.log('Keycloak: ', keycloak);
-  let user = extractUserInfo(req);
+  let user = extractUserInfo( req.kauth ? req.kauth.grant : undefined);
 
   req.session.isAuthenticated = true;
   req.session.user = user;
@@ -104,7 +104,12 @@ keycloak.accessDenied = async (req, res) => {
   try {
     console.log("-------- Get grant ... ");
     let grant = await keycloak.getGrant(req, res);
-    console.log("-------- grant ", grant);
+    console.log("-------- grant is ", grant);
+
+    let user = extractUserInfo(grant);
+
+    req.session.isAuthenticated = true;
+    req.session.user = user;
   } catch (err) {
     console.log("Failed to obtain a grant. error: ", err);
   }
@@ -112,9 +117,9 @@ keycloak.accessDenied = async (req, res) => {
   try {
     console.log("-------- Get grant from code ", req.query.code);
     let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
-    console.log("-------- grant from code: ", grant);
+    console.log("-------- grant from code is: ", grant);
 
-    let user = extractUserInfo(req);
+    let user = extractUserInfo(grant);
 
     req.session.isAuthenticated = true;
     req.session.user = user;
@@ -139,16 +144,18 @@ keycloak.accessDenied = async (req, res) => {
   //res.send("You don't have access to this page");
 }
 
-const extractUserInfo = (req) => {
-  if ( ! req.kauth ) {
+const extractUserInfo = (grant) => {
+  console.log('------------------ Extract user info ---------------')
+
+  if ( ! grant ) {
     console.log('No grant found...');
     return null;
   } 
 
   let user;
 
-  const grant = req.kauth.grant;
-  console.log('grant: ', grant);
+  // const grant = req.kauth.grant;
+  // console.log('grant: ', grant);
 
   if (grant) {
     const token = grant.access_token;
