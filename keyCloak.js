@@ -65,12 +65,12 @@ keycloak.deauthenticated = (req) => {
 
   const sessionId = req.session.id; 
   console.log("Session id: ", sessionId);
-  require('./memoryStore').destroy(sessionId, (err) => {
-    if ( err ) {
-      console.log('An error occured when destroing session ', sessionId );
-    }
-    console.log('session ', sessionId , ' was destroyed.');
-  })
+  // require('./memoryStore').destroy(sessionId, (err) => {
+  //   if ( err ) {
+  //     console.log('An error occured when destroing session ', sessionId );
+  //   }
+  //   console.log('session ', sessionId , ' was destroyed.');
+  // });
 }
 
 keycloak.accessDenied = async (req, res) => {

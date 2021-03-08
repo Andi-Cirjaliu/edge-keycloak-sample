@@ -4,7 +4,7 @@ const TITLE = "Keycloak demo";
 
 const getHomePage = (req, res, next) => {
   console.log("request to /  - NOT PROTECTED PAGE");
-  console.log("Session: ", req.session);
+  console.log("Session: ", req.session.id, ' - ',req.session);
   // console.log("Session store: ", require('./memoryStore'));
 
   return res.render("public/main", {
@@ -25,7 +25,7 @@ const getLoginPage = (req, res, next) => {
 
 const getLogoffPage = (req, res, next) => {
   console.log("request to /logoff  - NOT PROTECTED PAGE");
-  console.log("Session: ", req.session);
+  console.log("Session: ", req.session.id, ' - ',req.session);
 
   return res.redirect("/logout");
 };
