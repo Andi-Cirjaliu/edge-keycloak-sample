@@ -24,7 +24,8 @@ const sessionOption = {
   resave: false,
   saveUninitialized: true,
   store: store,
-  cookie: {}
+  cookie: {},
+  unset: 'destroy',
 };
 
 // if ( process.env.NODE_ENV === "production" ) {
@@ -33,7 +34,7 @@ const sessionOption = {
 // }
 console.log('Session options: ', sessionOption);
 
-app.use(session(sessionOption));
+app.use(session({ sessionOption));
 
 // app.use(express.json());
 

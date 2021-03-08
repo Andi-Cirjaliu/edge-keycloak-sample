@@ -4,12 +4,15 @@ services:
     image: 'quay.io/keycloak/keycloak:12.0.2'
     environment:
       - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_PASSWORD=andi
+      # - PROXY_ADDRESS_FORWARDING=true
       # - KEYCLOAK_LOGLEVEL=DEBUG
       # - ROOT_LOGLEVEL=DEBUG
       # - DEBUG=true
     ports: 
       - '8080:8080'
+      # - '127.0.0.1:8080:8080'
+      # - '172.17.208.1:8080:8080'
   app:
     build: 
       dockerfile: Dockerfile
@@ -19,11 +22,23 @@ services:
       - ./:/app
     environment: 
       - PORT=3000
+      - AUTH_SERVER_URL=http://192.168.1.14:8080/auth/
       #using the localhost for keycloak does NOT work - Access denied
       #using the external IP for keycloak is working fine
-      - AUTH_SERVER_URL=http://172.20.80.1:8080/auth/
+      # - AUTH_SERVER_URL=http://172.17.208.1:8080/auth/
       # - AUTH_SERVER_URL=http://localhost:8080/auth/      
       - AUTH_REALM=myrealm
       - AUTH_CLIENT=vanilla
     ports: 
       - '3000:3000'
+  # nginx:
+  #   build: 
+  #     dockerfile: Dockerfile
+  #     context: ./nginx
+  #   ports:
+  #       - '80:80'
+
+networks: 
+  default:
+    external:
+      name: dockernet
