@@ -17,15 +17,15 @@ app.set('views', 'views');
 
 // app.set( 'trust proxy', true );
 
-const storeCtrl = require('./memoryStoreController');
+const storeCtrl = require('./sessionStoreController');
 
 const sessionOption = {
   secret: 'mySecret',
   resave: true,
-  saveUninitialized: true,
-  store: storeCtrl.store1,
-  cookie: {},
-  unset: 'destroy',
+  saveUninitialized: false,
+  store: storeCtrl.store,
+  // cookie: {},
+  // unset: 'destroy',
 };
 
 // if ( process.env.NODE_ENV === "production" ) {

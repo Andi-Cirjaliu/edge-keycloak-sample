@@ -1,7 +1,7 @@
 const session = require('express-session');
 const Keycloak = require('keycloak-connect');
-const storeCtrl = require('./memoryStoreController');
-const store = storeCtrl.store1; //new session.MemoryStore();
+const storeCtrl = require('./sessionStoreController');
+const store = storeCtrl.store; //new session.MemoryStore();
 
 const environment = process.env.NODE_ENV || 'production';
 const authURL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
@@ -34,42 +34,40 @@ const keycloak = new Keycloak({ store }, kcConfig);
 // console.log('keycloak: ', keycloak); 
 
 keycloak.authenticated = (req) => {
-  console.log('User authenticated---------------');
+  console.log('-----------------User authenticated---------------');
 
-  console.log('Keycloak: ', keycloak);
+  // console.log('Keycloak: ', keycloak);
   let user = extractUserInfo( req.kauth ? req.kauth.grant : undefined);
 
   req.session.isAuthenticated = true;
   req.session.user = user;
 
   console.log("Session: ", req.session.id, ' - ',req.session);
-  storeCtrl.printStore(store);
+  // storeCtrl.printStore();
   console.log('-----------------------------');  
 }
 
 keycloak.deauthenticated = (req) => {
-  console.log('User deauthenticated---------------');
-
-  console.log('Keycloak: ', keycloak);
+  console.log('-----------------User deauthenticated---------------');
 
   if ( req.session ) {
     req.session.isAuthenticated = false;
     req.session.user = null;
   }
 
-  // req.session.destroy(function(err) {
+  console.log("Session: ", req.session.id, ' - ',req.session);
+  // storeCtrl.printStore();
+  console.log('-----------------------------');
+
+   // req.session.destroy(function(err) {
   //   // cannot access session here
   //   if ( err ) {
   //     console.log('Error occured when invalidatin session: ', err);
   //   }
   // });
 
-  console.log("Session: ", req.session.id, ' - ',req.session);
-  storeCtrl.printStore(store);
-  console.log('-----------------------------');
-
-  const sessionId = req.session.id; 
-  console.log("Session id: ", sessionId);
+  // const sessionId = req.session.id; 
+  // console.log("Session id: ", sessionId);
   // require('./memoryStore').destroy(sessionId, (err) => {
   //   if ( err ) {
   //     console.log('An error occured when destroing session ', sessionId );
@@ -79,23 +77,23 @@ keycloak.deauthenticated = (req) => {
 }
 
 keycloak.accessDenied = async (req, res) => {
-  console.log('Access denied---------------');
+  console.log('-----------------Access denied---------------');
   // console.log('Req: ', req);
   // console.log('Res: ', res);
 
-  console.log('Keycloak: ', keycloak);
+  // console.log('Keycloak: ', keycloak);
 
-  if ( req.kauth ) {
-    console.log('grant: ', req.kauth.grant);
-  } else {
-    console.log('No grant...');
-  }
+  // if ( req.kauth ) {
+  //   console.log('grant: ', req.kauth.grant);
+  // } else {
+  //   console.log('No grant...');
+  // }
 
   // req.session.isAuthenticated = false;
   // req.session.user = null;
 
   console.log("Session: ", req.session.id, ' - ',req.session);
-  storeCtrl.printStore(store);
+  // storeCtrl.printStore();
   console.log('-----------REQ CODE------------------');
 
   console.log(req.query);
@@ -126,12 +124,12 @@ keycloak.accessDenied = async (req, res) => {
     req.session.isAuthenticated = true;
     req.session.user = user;
 
-    return res.redirect('/');
+    return res.redirect("/");
   } catch (err) {
     console.log("Failed to obtain a grant from code. error: ", err);
   }
 
-  // console.log(keycloak.grantManager);
+  // console.log(keycloak.grantManager); 
 
   // if ( req.query.code ) {
   //   console.log('Try to get the token from access code ', req.query.code);
