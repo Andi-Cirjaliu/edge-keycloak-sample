@@ -34,7 +34,7 @@ const sessionOption = {
 // }
 console.log('Session options: ', sessionOption);
 
-app.use(session({ sessionOption));
+app.use(session( sessionOption));
 
 // app.use(express.json());
 
