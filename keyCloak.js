@@ -101,13 +101,13 @@ keycloak.accessDenied = async (req, res) => {
 
   console.log('-----------------------------');
 
-  // try {
-  //   console.log("-------- Get grant ... ");
-  //   let grant = await keycloak.getGrant(req, res);
-  //   console.log("-------- grant ", grant);
-  // } catch (err) {
-  //   console.log("Failed to obtain a grant. error: ", err);
-  // }
+  try {
+    console.log("-------- Get grant ... ");
+    let grant = await keycloak.getGrant(req, res);
+    console.log("-------- grant ", grant);
+  } catch (err) {
+    console.log("Failed to obtain a grant. error: ", err);
+  }
 
   try {
     console.log("-------- Get grant from code ", req.query.code);
