@@ -78,6 +78,8 @@ keycloak.accessDenied = async (req, res) => {
   // console.log('Req: ', req);
   // console.log('Res: ', res);
 
+  console.log('Keycloak: ', keycloak);
+
   if ( req.kauth ) {
     console.log('grant: ', req.kauth.grant);
   } else {
@@ -95,6 +97,20 @@ keycloak.accessDenied = async (req, res) => {
   // console.log(req.query.code);
 
   console.log('-----------------------------');
+
+  try {
+    let grant = await keycloak.getGrant(req, res);
+    console.log("grant ", grant);
+  } catch (err) {
+    console.log("Failed to obtain a grant. error: ", err);
+  }
+
+  try {
+    let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
+    console.log("grant ", grant);
+  } catch (err) {
+    console.log("Failed to obtain a grant from code. error: ", err);
+  }
 
   // console.log(keycloak.grantManager);
 
