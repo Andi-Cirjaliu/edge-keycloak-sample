@@ -39,7 +39,7 @@ keycloak.authenticated = (req) => {
   req.session.isAuthenticated = true;
   req.session.user = user;
 
-  console.log("Session: ", req.session);
+  console.log("Session: ", req.session.id, ' - ',req.session);
   console.log("Session store: ", require('./memoryStore'));
   console.log('-----------------------------');  
 }
@@ -59,7 +59,7 @@ keycloak.deauthenticated = (req) => {
   //   }
   // });
 
-  console.log("Session: ", req.session);
+  console.log("Session: ", req.session.id, ' - ',req.session);
   console.log("Session store: ", require('./memoryStore'));
   console.log('-----------------------------');
 
@@ -87,7 +87,8 @@ keycloak.accessDenied = async (req, res) => {
   req.session.isAuthenticated = false;
   req.session.user = null;
 
-  console.log("Session: ", req.session);
+  console.log("Session: ", req.session.id, ' - ',req.session);
+  console.log("Session store: ", require('./memoryStore'));
   console.log('-----------REQ CODE------------------');
 
   console.log(req.query);

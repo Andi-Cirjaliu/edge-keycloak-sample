@@ -64,8 +64,8 @@ const getPosts = async (req, res, next) => {
 
 const getAccessDeniedPage = (req, res, next) => {
   console.log("request to /denied  - NOT PROTECTED PAGE");
-  console.log("Session: ", req.session);
-  // console.log("Session store: ", require('./memoryStore'));
+  console.log("Session: ", req.session.id, ' - ',req.session);
+  console.log("Session store: ", require('./memoryStore'));
 
   return res.render("public/404", {
     pageTitle: TITLE,
