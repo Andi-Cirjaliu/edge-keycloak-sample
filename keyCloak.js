@@ -8,18 +8,20 @@ const authURL = process.env.AUTH_SERVER_URL || 'http://localhost:8080';
 const authRealm = process.env.AUTH_REALM;
 const authClient = process.env.AUTH_CLIENT || "myclient";
 const authPublicKey = process.env.AUTH_PUBLIC_KEY;
+const authSSLRequired = process.env.AUTH_SSL_REQUIRED || 'external';
 
 console.log('Environment: ', environment);
 console.log('authURL: ', authURL);
 console.log('authRealm: ', authRealm);
 console.log('authClient: ', authClient);
 console.log('authPublicKey: ', authPublicKey);
+console.log('authSSLRequired: ', authSSLRequired);
 console.log('NODE_TLS_REJECT_UNAUTHORIZED:', process.env.NODE_TLS_REJECT_UNAUTHORIZED)
 
 const kcConfig = {
     "realm": authRealm,
     "auth-server-url": authURL,
-    "ssl-required": "external", //"none" //"external"
+    "ssl-required": authSSLRequired, //"none" //"external"
     "resource": "vanilla",
     "public-client": true,
     "confidential-port": 0
@@ -101,28 +103,30 @@ keycloak.accessDenied = async (req, res) => {
 
   console.log('-----------------------------');
 
-  try {
-    console.log("-------- Get grant ... ");
-    let grant = await keycloak.getGrant(req, res);
-    console.log("-------- grant is ", grant);
+  // try {
+  //   console.log("-------- Get grant ... ");
+  //   let grant = await keycloak.getGrant(req, res);
+  //   console.log("-------- grant is ", grant);
 
-    let user = extractUserInfo(grant);
+  //   let user = extractUserInfo(grant);
 
-    req.session.isAuthenticated = true;
-    req.session.user = user;
-  } catch (err) {
-    console.log("Failed to obtain a grant. error: ", err);
-  }
+  //   req.session.isAuthenticated = true;
+  //   req.session.user = user;
+  // } catch (err) {
+  //   console.log("Failed to obtain a grant. error: ", err);
+  // }
 
   try {
     console.log("-------- Get grant from code ", req.query.code);
     let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
-    console.log("-------- grant from code is: ", grant);
+    console.log("-------- successfully get grant from code ....");
 
     let user = extractUserInfo(grant);
 
     req.session.isAuthenticated = true;
     req.session.user = user;
+
+    return res.redirect('/');
   } catch (err) {
     console.log("Failed to obtain a grant from code. error: ", err);
   }
