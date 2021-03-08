@@ -12,4 +12,4 @@ const printStores = () => {
     console.log(store2);
 }
 
-module.exports = {store1, store2, printStore};
+module.exports = {store1, store2, printStore, printStores};

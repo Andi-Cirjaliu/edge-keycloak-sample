@@ -40,7 +40,7 @@ keycloak.authenticated = (req) => {
   req.session.user = user;
 
   console.log("Session: ", req.session.id, ' - ',req.session);
-  console.log("Session store: ", storeCtrl.printStore(store));
+  storeCtrl.printStore(store);
   console.log('-----------------------------');  
 }
 
@@ -60,7 +60,7 @@ keycloak.deauthenticated = (req) => {
   // });
 
   console.log("Session: ", req.session.id, ' - ',req.session);
-  console.log("Session store: ", storeCtrl.printStore(store));
+  storeCtrl.printStore(store);
   console.log('-----------------------------');
 
   const sessionId = req.session.id; 
@@ -88,7 +88,7 @@ keycloak.accessDenied = async (req, res) => {
   req.session.user = null;
 
   console.log("Session: ", req.session.id, ' - ',req.session);
-  console.log("Session store: ", storeCtrl.printStore(store));
+  storeCtrl.printStore(store);
   console.log('-----------REQ CODE------------------');
 
   console.log(req.query);
