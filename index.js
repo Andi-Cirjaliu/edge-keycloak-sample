@@ -22,7 +22,7 @@ const storeCtrl = require('./memoryStoreController');
 const sessionOption = {
   secret: 'mySecret',
   resave: true,
-  saveUninitialized: false,
+  saveUninitialized: true,
   store: storeCtrl.store1,
   cookie: {},
   unset: 'destroy',
