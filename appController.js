@@ -6,7 +6,7 @@ const TITLE = "Keycloak demo";
 const getHomePage = (req, res, next) => {
   console.log("request to /  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session.id, ' - ',req.session);
-  storeCtrl.printStore();
+  // storeCtrl.printStore();
 
   return res.render("public/main", {
     pageTitle: TITLE,
@@ -66,7 +66,7 @@ const getPosts = async (req, res, next) => {
 const getAccessDeniedPage = (req, res, next) => {
   console.log("request to /denied  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session.id, ' - ',req.session);
-  storeCtrl.printStore();
+  // storeCtrl.printStore();
 
   return res.render("public/404", {
     pageTitle: TITLE,

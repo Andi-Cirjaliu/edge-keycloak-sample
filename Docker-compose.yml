@@ -31,12 +31,6 @@ services:
       - AUTH_CLIENT=vanilla
     ports: 
       - '3000:3000'
-  # nginx:
-  #   build: 
-  #     dockerfile: Dockerfile
-  #     context: ./nginx
-  #   ports:
-  #       - '80:80'
 
 networks: 
   default:

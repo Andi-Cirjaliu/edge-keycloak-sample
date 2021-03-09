@@ -101,19 +101,6 @@ keycloak.accessDenied = async (req, res) => {
 
   console.log('-----------------------------');
 
-  // try {
-  //   console.log("-------- Get grant ... ");
-  //   let grant = await keycloak.getGrant(req, res);
-  //   console.log("-------- grant is ", grant);
-
-  //   let user = extractUserInfo(grant);
-
-  //   req.session.isAuthenticated = true;
-  //   req.session.user = user;
-  // } catch (err) {
-  //   console.log("Failed to obtain a grant. error: ", err);
-  // }
-
   try {
     console.log("-------- Get grant from code ", req.query.code);
     let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
@@ -128,19 +115,6 @@ keycloak.accessDenied = async (req, res) => {
   } catch (err) {
     console.log("Failed to obtain a grant from code. error: ", err);
   }
-
-  // console.log(keycloak.grantManager); 
-
-  // if ( req.query.code ) {
-  //   console.log('Try to get the token from access code ', req.query.code);
-
-  //   try {
-  //     let grant = await keycloak.grantManager.obtainFromCode(req.query.code);
-  //     console.log("grant ", grant);
-  //   } catch (err) {
-  //     console.log("Failed to obtain a grant from code. error: ", err);
-  //   }
-  // }
 
   res.redirect('/denied');
   //res.send("You don't have access to this page");
