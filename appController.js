@@ -11,6 +11,7 @@ const getHomePage = (req, res, next) => {
   return res.render("public/main", {
     pageTitle: TITLE,
     isAuthenticated: req.session.isAuthenticated,
+    isAdmin: req.session.isAdmin,
     path: "/",
     user: req.session.user,
     errorMsg: null,
@@ -45,6 +46,7 @@ const getPosts = async (req, res, next) => {
     return res.render("private/posts", {
       pageTitle: TITLE,
       isAuthenticated: req.session.isAuthenticated,
+      isAdmin: req.session.isAdmin,
       path: "/posts",
       user: req.session.user,
       data: posts,
@@ -63,6 +65,39 @@ const getPosts = async (req, res, next) => {
   }
 };
 
+const getUsers = async (req, res, next) => {
+  console.log("request to /users  - the user IS authenticated");
+  console.log("Session: ", req.session);
+
+  try {
+    const response = await axios.get(
+      "https://jsonplaceholder.typicode.com/users"
+    );
+    const users = response.data;
+    console.log(users);
+
+    return res.render("private/users", {
+      pageTitle: TITLE,
+      isAuthenticated: req.session.isAuthenticated,
+      isAdmin: req.session.isAdmin,
+      path: "/users",
+      user: req.session.user,
+      data: users,
+      errorMsg: null,
+    });
+  } catch (error) {
+    console.log("Failed to retrieve the users. error: ", error);
+    return res.render("private/users", {
+      pageTitle: TITLE,
+      isAuthenticated: req.session.isAuthenticated,
+      path: "/users",
+      user: req.session.user,
+      data: null,
+      errorMsg: "Failed to retrieve the users!",
+    });
+  }
+};
+
 const getAccessDeniedPage = (req, res, next) => {
   console.log("request to /denied  - NOT PROTECTED PAGE");
   console.log("Session: ", req.session.id, ' - ',req.session);
@@ -71,6 +106,7 @@ const getAccessDeniedPage = (req, res, next) => {
   return res.render("public/404", {
     pageTitle: TITLE,
     isAuthenticated: req.session.isAuthenticated,
+    isAdmin: req.session.isAdmin,
     path: "/",
     user: req.session.user,
     errorMsg: "You don't have access to this page",
@@ -117,6 +153,7 @@ module.exports = {
   getHomePage,
   getLoginPage,
   getPosts,
+  getUsers,
   getLogoffPage,
   getAccessDeniedPage,
   checkSSO,

@@ -10,6 +10,11 @@
                 <li class="main-header__item">
                     <a class="<%= path === '/posts' ? 'active' : '' %>" href="/posts">Posts</a>
                 </li>
+                <% if ( isAdmin ) { %>
+                    <li class="main-header__item">
+                        <a class="<%= path === '/users' ? 'active' : '' %>" href="/users">Users</a>
+                    </li>
+                <% } %>
              <% } %>
         </ul>
         <ul class="main-header__item-list">

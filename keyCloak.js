@@ -10,13 +10,18 @@ const authClient = process.env.AUTH_CLIENT || "myclient";
 const authPublicKey = process.env.AUTH_PUBLIC_KEY;
 const authSSLRequired = process.env.AUTH_SSL_REQUIRED || 'external';
 
+const userRole = process.env.USER_ROLE || 'user';
+const adminRole = process.env.ADMIN_ROLE || 'admin';
+
 console.log('Environment: ', environment);
 console.log('authURL: ', authURL);
 console.log('authRealm: ', authRealm);
 console.log('authClient: ', authClient);
 console.log('authPublicKey: ', authPublicKey);
 console.log('authSSLRequired: ', authSSLRequired);
-console.log('NODE_TLS_REJECT_UNAUTHORIZED:', process.env.NODE_TLS_REJECT_UNAUTHORIZED)
+console.log('userRole: ', userRole);
+console.log('adminRole: ', adminRole);
+// console.log('NODE_TLS_REJECT_UNAUTHORIZED:', process.env.NODE_TLS_REJECT_UNAUTHORIZED)
 
 const kcConfig = {
     "realm": authRealm,
@@ -41,6 +46,7 @@ keycloak.authenticated = (req) => {
 
   req.session.isAuthenticated = true;
   req.session.user = user;
+  req.session.isAdmin = user.client_roles.includes(adminRole);
 
   console.log("Session: ", req.session.id, ' - ',req.session);
   // storeCtrl.printStore();
@@ -53,6 +59,7 @@ keycloak.deauthenticated = (req) => {
   if ( req.session ) {
     req.session.isAuthenticated = false;
     req.session.user = null;
+    req.session.isAdmin = false;
   }
 
   console.log("Session: ", req.session.id, ' - ',req.session);
@@ -78,10 +85,6 @@ keycloak.deauthenticated = (req) => {
 
 keycloak.accessDenied = async (req, res) => {
   console.log('-----------------Access denied---------------');
-  // console.log('Req: ', req);
-  // console.log('Res: ', res);
-
-  // console.log('Keycloak: ', keycloak);
 
   // if ( req.kauth ) {
   //   console.log('grant: ', req.kauth.grant);
@@ -101,19 +104,22 @@ keycloak.accessDenied = async (req, res) => {
 
   console.log('-----------------------------');
 
-  try {
-    console.log("-------- Get grant from code ", req.query.code);
-    let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
-    console.log("-------- successfully get grant from code ....");
+  for (i = 1; i <= 2; i++) {
+    try {
+      console.log("-------- Try to get grant from code ", req.query.code);
+      let grant = await keycloak.getGrantFromCode(req.query.code, req, res);
+      console.log("-------- successfully get grant from code ....");
 
-    let user = extractUserInfo(grant);
+      let user = extractUserInfo(grant);
 
-    req.session.isAuthenticated = true;
-    req.session.user = user;
+      req.session.isAuthenticated = true;
+      req.session.user = user;
+      req.session.isAdmin = user.client_roles.includes(adminRole);
 
-    return res.redirect("/");
-  } catch (err) {
-    console.log("Failed to obtain a grant from code. error: ", err);
+      return res.redirect("/");
+    } catch (err) {
+      console.log("Failed to obtain a grant from code. error: ", err);
+    }
   }
 
   res.redirect('/denied');
@@ -130,7 +136,6 @@ const extractUserInfo = (grant) => {
 
   let user;
 
-  // const grant = req.kauth.grant;
   // console.log('grant: ', grant);
 
   if (grant) {
@@ -138,6 +143,9 @@ const extractUserInfo = (grant) => {
     // console.log('----entire token: ', token);
     console.log("----token: ", token.token);
     console.log("------content: ", token.content);
+    console.log("------content resource access - realm roles: ", token.content.realm_access.roles);
+    // console.log("------content resource access - account- roles: ", token.content.resource_access.account.roles);    
+    console.log("------content resource access - client- roles: ", token.content.resource_access[authClient]);    
     console.log(
       "------user id: ",
       token.content.sub,
@@ -146,18 +154,44 @@ const extractUserInfo = (grant) => {
       ", email: ",
       token.content.email
     );
-    // var permissions = token.authorization
-    //   ? token.authorization.permissions
-    //   : undefined;
-    // console.log("------permissions: ", permissions);
+
+    var permissions = token.authorization
+      ? token.authorization.permissions
+      : undefined;
+    console.log("------permissions (token): ", permissions);
 
     const id = token.content.sub;
     const name = token.content.name;
     const email = token.content.email;
     user = { id, name, email };
+
+    //check user roles on realm
+    user.realm_roles = token.content.realm_access.roles;
+    //check user roles on client
+    user.client_roles = [];
+    if (token.content.resource_access[authClient]) {
+      user.client_roles = token.content.resource_access[authClient].roles;
+    }
   }
 
+  console.log("------user info: ", user);
+
   return user;
+}
+
+keycloak.checkUserRole = (token, request) => {
+  console.log('Check user role...');
+  // console.log('token: ', token);
+  console.log('has user role:', token.hasRole(userRole));
+  console.log('has admin role:', token.hasRole(adminRole));
+  return token.hasRole(userRole) || token.hasRole(adminRole);
+}
+
+keycloak.checkAdminRole = (token, request) => {
+  console.log('Check admin role...');
+  // console.log('token: ', token);
+  console.log('has admin role:', token.hasRole(adminRole));
+  return token.hasRole(adminRole);
 }
 
 module.exports = keycloak;
