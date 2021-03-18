@@ -25,5 +25,6 @@ router.get("/logoff", appController.getLogoffPage);
 router.post("/logoff", appController.getLogoffPage);
 
 router.get("/denied", appController.getAccessDeniedPage);
+router.get("/500", appController.getErrorPage);
 
 module.exports = router;

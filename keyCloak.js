@@ -10,8 +10,20 @@ const authClient = process.env.AUTH_CLIENT || "myclient";
 const authPublicKey = process.env.AUTH_PUBLIC_KEY;
 const authSSLRequired = process.env.AUTH_SSL_REQUIRED || 'external';
 
-const userRole = process.env.USER_ROLE || 'user';
-const adminRole = process.env.ADMIN_ROLE || 'admin';
+let roleType = process.env.AUTH_ROLE_TYPE || 'client';
+if ( roleType !== 'client' && roleType !== 'realm' ) {
+  roleType = 'client';
+}
+let userRole = process.env.AUTH_USER_ROLE || 'user';
+// console.log('userRole: ', userRole);
+if ( roleType === 'realm' ) {
+  userRole = 'realm:'+userRole;
+}
+let adminRole = process.env.AUTH_ADMIN_ROLE || 'admin';
+// console.log('adminRole: ', adminRole);
+if ( roleType === 'realm' ) {
+  adminRole = 'realm:'+adminRole;
+}
 
 console.log('Environment: ', environment);
 console.log('authURL: ', authURL);
@@ -19,6 +31,7 @@ console.log('authRealm: ', authRealm);
 console.log('authClient: ', authClient);
 console.log('authPublicKey: ', authPublicKey);
 console.log('authSSLRequired: ', authSSLRequired);
+console.log('roleType: ', roleType);
 console.log('userRole: ', userRole);
 console.log('adminRole: ', adminRole);
 // console.log('NODE_TLS_REJECT_UNAUTHORIZED:', process.env.NODE_TLS_REJECT_UNAUTHORIZED)
@@ -46,7 +59,7 @@ keycloak.authenticated = (req) => {
 
   req.session.isAuthenticated = true;
   req.session.user = user;
-  req.session.isAdmin = user.client_roles.includes(adminRole);
+  req.session.isAdmin = checkIfAdmin(user, req.kauth.grant.access_token);
 
   console.log("Session: ", req.session.id, ' - ',req.session);
   // storeCtrl.printStore();
@@ -92,9 +105,6 @@ keycloak.accessDenied = async (req, res) => {
   //   console.log('No grant...');
   // }
 
-  // req.session.isAuthenticated = false;
-  // req.session.user = null;
-
   console.log("Session: ", req.session.id, ' - ',req.session);
   // storeCtrl.printStore();
   console.log('-----------REQ CODE------------------');
@@ -103,6 +113,8 @@ keycloak.accessDenied = async (req, res) => {
   // console.log(req.query.code);
 
   console.log('-----------------------------');
+
+  let errorMsg;
 
   for (i = 1; i <= 2; i++) {
     try {
@@ -114,15 +126,34 @@ keycloak.accessDenied = async (req, res) => {
 
       req.session.isAuthenticated = true;
       req.session.user = user;
-      req.session.isAdmin = user.client_roles.includes(adminRole);
+      req.session.isAdmin = checkIfAdmin(user, grant.access_token);
 
       return res.redirect("/");
     } catch (err) {
+      errorMsg = err.message;
       console.log("Failed to obtain a grant from code. error: ", err);
     }
   }
 
-  res.redirect('/denied');
+  console.log('errorMsg: ', errorMsg);
+  
+  let statusCode = 302;
+  let err;
+  if (errorMsg.includes("ECONNREFUSED")) {
+    statusCode = 301;
+    err = 1;
+  // } else if (errorMsg.includes("Bad Request")) {
+  //   statusCode = 301;
+  //   err = 11;
+  }
+  console.log('Status code: ', statusCode, ', err: ', err);  
+
+  if ( err ) {
+    return res.redirect(statusCode, `/500?err=${err}`);
+  } 
+
+  res.redirect(statusCode, '/denied');
+  // res.redirect('/denied');  
   //res.send("You don't have access to this page");
 }
 
@@ -192,6 +223,27 @@ keycloak.checkAdminRole = (token, request) => {
   // console.log('token: ', token);
   console.log('has admin role:', token.hasRole(adminRole));
   return token.hasRole(adminRole);
+}
+
+const checkIfAdmin = (user, token) => {
+  console.log('Check if user ', user.name, ' is admin.');
+
+  let isAdmin = false;
+
+  if ( token ) {
+    isAdmin = token.hasRole(adminRole);
+  } 
+
+  // if ( adminRole.startsWith('realm:')) {
+  //   const role = adminRole.substr('realm:'.length);
+  //   isAdmin = user.realm_roles.includes(role);
+  // } else {
+  //   isAdmin = user.client_roles.includes(adminRole);
+  // }
+
+  console.log('user ', user.name, ' is admin: ', isAdmin);
+
+  return isAdmin;
 }
 
 module.exports = keycloak;

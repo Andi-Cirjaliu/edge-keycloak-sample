@@ -99,17 +99,47 @@ const getUsers = async (req, res, next) => {
 };
 
 const getAccessDeniedPage = (req, res, next) => {
-  console.log("request to /denied  - NOT PROTECTED PAGE");
+  console.log("request to /denied  - NOT PROTECTED PAGE, statusCode: ", res.statusCode);
   console.log("Session: ", req.session.id, ' - ',req.session);
   // storeCtrl.printStore();
 
-  return res.render("public/404", {
+  const msg = res.statusCode === 500 ? "" : "You don't have access to this page";
+
+  return res.render("public/403", {
     pageTitle: TITLE,
     isAuthenticated: req.session.isAuthenticated,
     isAdmin: req.session.isAdmin,
     path: "/",
     user: req.session.user,
-    errorMsg: "You don't have access to this page",
+    errorMsg: msg,
+  });
+};
+
+const getErrorPage = (req, res, next) => {
+  console.log("request to /500  - NOT PROTECTED PAGE, statusCode: ", res.statusCode);
+  console.log("Session: ", req.session.id, ' - ',req.session);
+  // storeCtrl.printStore();
+  console.log("Query: ", req.query);
+
+  const {err} = req.query;
+
+  let msg = "";
+  if ( err === '1' ) {
+    msg = "An internal error occured: Connection refused. Click on the Login link to try again.";
+  // } else if ( err === '2' ) {
+  //   msg = "An internal error occured: Bad request";
+  } else {
+    msg = "An internal error occured.";
+  }
+  console.log("msg: ", msg);
+
+  return res.render("public/500", {
+    pageTitle: TITLE,
+    isAuthenticated: req.session.isAuthenticated,
+    isAdmin: req.session.isAdmin,
+    path: "/",
+    user: req.session.user,
+    errorMsg: msg,
   });
 };
 
@@ -156,5 +186,6 @@ module.exports = {
   getUsers,
   getLogoffPage,
   getAccessDeniedPage,
+  getErrorPage,
   checkSSO,
 };
